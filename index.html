@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mission | Respark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e27;
+  --bg-card:rgba(255,255,255,0.04);
+  --bg-card-hover:rgba(255,255,255,0.07);
+  --ink:#f5f3ff;
+  --ink-muted:rgba(245,243,255,0.68);
+  --ink-faint:rgba(245,243,255,0.38);
+  --fire-yellow:#FFD94A;
+  --fire-amber:#FFA826;
+  --fire-orange:#FF7A1A;
+  --fire-red:#FF4C0D;
+  --divider:rgba(255,255,255,0.08);
+  --divider-strong:rgba(255,255,255,0.14);
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(circle at 15% 10%,rgba(255,122,26,0.16) 0%,transparent 44%),
+    radial-gradient(circle at 85% 15%,rgba(255,168,38,0.13) 0%,transparent 46%),
+    radial-gradient(circle at 50% 95%,rgba(255,76,13,0.12) 0%,transparent 48%),
+    var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  font-weight:400;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  position:relative;
+}
+
+/* ── AMBIENT EMBERS (whole-document brand thread) ── */
+.embers{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.ember-spark{
+  position:absolute;bottom:-20px;border-radius:50%;
+  background:radial-gradient(circle,#fff3d0,var(--fire-orange) 70%,transparent 100%);
+  opacity:0.4;filter:blur(0.3px);
+  animation:ember-rise linear infinite;
+}
+@keyframes ember-rise{
+  0%{transform:translateY(0) translateX(0);opacity:0;}
+  10%{opacity:0.45;}
+  100%{transform:translateY(-115vh) translateX(var(--drift,20px));opacity:0;}
+}
+@media(prefers-reduced-motion:reduce){.ember-spark{animation:none;display:none;}}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(18,23,52,0.95);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--divider-strong);
+  padding:0 32px;
+}
+.nav-inner{
+  max-width:1000px;margin:0 auto;
+  display:flex;align-items:center;gap:8px;
+  padding:12px 0;
+}
+.nav-brand{
+  font-family:'Fraunces',serif;font-style:italic;font-size:17px;
+  color:var(--fire-amber);margin-right:12px;
+}
+.nav-sep{color:var(--divider-strong);font-size:18px;margin-right:4px;}
+.nav-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-muted);
+}
+
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ── WRAP ── */
+.wrap{max-width:860px;margin:0 auto;padding:72px 40px 120px;}
+
+/* ══════════════════════════════════════════
+   MISSION STAGE (re-themed slide deck)
+══════════════════════════════════════════ */
+.mission-stage{
+  position:relative;height:78vh;min-height:540px;max-height:740px;
+  overflow:hidden;border:1px solid var(--divider);border-radius:var(--radius);
+  background:rgba(255,255,255,0.015);
+}
+.m-slide{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:48px 6vw 96px;
+  opacity:0;visibility:hidden;
+  transform:translateY(14px);
+  transition:opacity 0.45s ease,transform 0.45s ease;
+}
+.m-slide.active{opacity:1;visibility:visible;transform:translateY(0);}
+.m-slide-inner{max-width:780px;width:100%;}
+
+.m-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:clamp(11px,1.3vw,13px);
+  letter-spacing:0.22em;text-transform:uppercase;color:var(--fire-amber);
+  font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;
+}
+.m-eyebrow::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--fire-orange);box-shadow:0 0 10px var(--fire-orange);flex:0 0 auto;
+}
+
+.m-display{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(40px,6.4vw,78px);line-height:1.0;margin:0 0 18px;
+  letter-spacing:-0.01em;
+  background:linear-gradient(135deg,var(--fire-yellow),var(--fire-amber) 40%,var(--fire-orange) 72%,var(--fire-red));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 50px rgba(255,122,26,0.5);
+}
+.m-headline{
+  font-family:'Fraunces',serif;font-weight:700;
+  font-size:clamp(28px,4.4vw,46px);line-height:1.08;margin:0 0 20px;color:var(--ink);
+}
+.m-lede{font-size:clamp(16px,2vw,19px);line-height:1.6;color:var(--ink-muted);max-width:620px;}
+.m-tagline{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(16px,2vw,21px);color:var(--ink-muted);}
+
+.m-quote-box{
+  background:var(--bg-card);border:1px solid var(--divider);border-left:4px solid var(--fire-orange);
+  border-radius:10px;padding:16px 22px;margin:22px 0;
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:clamp(16px,2vw,20px);color:var(--ink);max-width:640px;
+}
+
+ul.m-plain{list-style:none;margin:18px 0 0;padding:0;max-width:600px;}
+ul.m-plain li{
+  font-size:16px;line-height:1.55;color:var(--ink-muted);margin-bottom:10px;
+  padding-left:22px;position:relative;
+}
+ul.m-plain li strong{color:var(--ink);}
+ul.m-plain li::before{content:'●';color:var(--fire-orange);position:absolute;left:0;font-size:10px;top:6px;}
+
+.m-bigword{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(40px,6.4vw,78px);line-height:1.0;margin:6px 0 22px;
+  background:linear-gradient(135deg,var(--fire-yellow),var(--fire-amber) 40%,var(--fire-orange) 72%,var(--fire-red));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 60px rgba(255,76,13,0.55);
+}
+
+.m-ember-num{
+  font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:14px;color:#fff5e0;background:linear-gradient(90deg,var(--fire-orange),var(--fire-red));
+  display:inline-block;padding:5px 13px;border-radius:999px;margin-bottom:16px;
+  box-shadow:0 4px 20px rgba(255,76,13,0.5);letter-spacing:0.05em;
+}
+.m-felt-line{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:600;
+  font-size:clamp(22px,3vw,32px);color:var(--ink);margin:10px 0 24px;max-width:680px;
+}
+.m-symptoms{display:flex;flex-direction:column;gap:9px;margin-bottom:24px;}
+.m-symptoms span{
+  font-size:15.5px;color:var(--ink-muted);background:var(--bg-card);
+  border:1px solid var(--divider);border-radius:10px;padding:9px 14px;max-width:560px;
+}
+.m-closing-line{
+  font-size:16px;color:var(--ink);font-weight:600;max-width:560px;
+  border-top:1px dashed var(--divider);padding-top:14px;
+}
+
+.m-ba-row{display:flex;gap:18px;margin-top:18px;flex-wrap:wrap;}
+.m-ba-card{flex:1 1 240px;background:var(--bg-card);border:1px solid var(--divider);border-radius:14px;padding:18px 20px;}
+.m-ba-card h3{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px;}
+.m-ba-card.before h3{color:var(--ink-faint);}
+.m-ba-card.after h3{color:var(--fire-amber);}
+.m-ba-card p{margin:0;font-size:15px;line-height:1.6;color:var(--ink-muted);}
+
+.m-fw-grid{display:flex;flex-direction:column;gap:10px;margin-top:6px;max-width:640px;}
+.m-fw-row{display:flex;align-items:baseline;gap:14px;}
+.m-fw-letter{
+  font-family:'Fraunces',serif;font-weight:900;font-size:26px;width:38px;text-align:center;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--fire-yellow),var(--fire-amber) 40%,var(--fire-orange) 72%,var(--fire-red));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.m-fw-text{font-size:16px;color:var(--ink-muted);}
+.m-fw-text strong{color:var(--ink);}
+
+.m-cta-btn{
+  display:inline-block;margin-top:26px;border:none;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.04em;
+  font-size:15px;color:#fff7e6;text-decoration:none;
+  background:linear-gradient(90deg,var(--fire-orange),var(--fire-red));
+  padding:16px 34px;border-radius:999px;
+  box-shadow:0 8px 30px rgba(255,76,13,0.5);
+  transition:transform 0.15s ease,box-shadow 0.15s ease;
+}
+.m-cta-btn:hover{transform:translateY(-1px);box-shadow:0 10px 34px rgba(255,76,13,0.6);}
+.m-cta-btn:focus-visible{outline:2px solid var(--fire-amber);outline-offset:3px;}
+.m-signoff{margin-top:22px;font-family:'Fraunces',serif;font-style:italic;color:var(--ink-faint);font-size:15px;}
+
+.m-nav-bar{
+  position:absolute;left:0;right:0;bottom:0;z-index:5;
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:16px 20px 22px;
+  background:linear-gradient(180deg,transparent,rgba(10,14,39,0.92) 45%);
+}
+.m-nav-btn{
+  width:44px;height:44px;border-radius:50%;border:1.5px solid var(--divider-strong);
+  background:var(--bg-card);color:var(--fire-amber);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s ease;
+}
+.m-nav-btn:hover{background:var(--bg-card-hover);border-color:var(--fire-amber);}
+.m-nav-btn:disabled{opacity:0.25;cursor:default;}
+.m-nav-btn:focus-visible{outline:2px solid var(--fire-amber);outline-offset:2px;}
+.m-dots{display:flex;gap:7px;align-items:center;}
+.m-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--divider-strong);cursor:pointer;border:none;padding:0;
+  transition:all 0.2s ease;
+}
+.m-dot.active{background:var(--fire-orange);width:22px;border-radius:5px;box-shadow:0 0 10px var(--fire-orange);}
+.m-counter{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--fire-amber);font-weight:700;
+  min-width:46px;text-align:center;
+}
+
+@media(max-width:640px){
+  .mission-stage{height:auto;min-height:620px;}
+  .m-slide{padding:32px 6vw 96px;}
+  .m-ba-row{flex-direction:column;}
+}
+
+/* ── FOOTER ── */
+.rs-footer{
+  margin-top:28px;padding:28px 4px 8px;
+  border-top:1px solid var(--divider);
+  text-align:center;
+}
+.rs-footer-links{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:8px;margin-bottom:14px;
+}
+.rs-footer-links a{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--ink-faint);text-decoration:none;
+}
+.rs-footer-links a:hover{color:var(--fire-amber);}
+.rs-footer-dot{color:var(--ink-faint);opacity:0.5;}
+.rs-footer-meta{
+  font-size:12px;color:var(--ink-faint);line-height:1.7;margin-bottom:10px;
+}
+.rs-footer-meta a{color:var(--ink-faint);text-decoration:underline;}
+.rs-footer-meta a:hover{color:var(--fire-amber);}
+.rs-footer-copy{
+  font-size:11px;color:var(--ink-faint);opacity:0.6;
+}
+</style>
+</head>
+<body>
+
+<div class="embers" id="embers"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-brand">Respark</span>
+    <span class="nav-sep">·</span>
+    <span class="nav-title">The Mission</span>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════
+     MISSION
+══════════════════════════════════════════ -->
+<div class="page active" id="page-mission">
+<div class="wrap">
+
+  <div class="mission-stage" id="missionStage">
+
+    <section class="m-slide active">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">A welcome from Alena &amp; Orlando</div>
+        <h1 class="m-display">RESPARK</h1>
+        <div class="m-tagline">Remember + Spark, merged.</div>
+        <p class="m-lede" style="margin-top:24px;">Before we show you what's inside, we want you to see exactly who this was built for — and why.</p>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">Who this is for</div>
+        <h2 class="m-headline">You've built something. So why does it feel like you're missing?</h2>
+        <p class="m-lede">This isn't about your job title, your income, or your relationship status. It's about a feeling underneath all of it.</p>
+        <div class="m-quote-box">"I've achieved a lot. I just don't feel like myself anymore."</div>
+        <ul class="m-plain">
+          <li>Entrepreneurs and business owners</li>
+          <li>Executives and leaders</li>
+          <li>Married and business-partner couples</li>
+          <li>Parents holding it all together</li>
+        </ul>
+        <p class="m-lede" style="margin-top:18px;">Different lives. Same quiet sentence running underneath.</p>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">The real problem</div>
+        <div class="m-bigword">DISCONNECTION</div>
+        <p class="m-lede">Not failure. Not burnout. Not "needing more." This is disconnection — from yourself, your emotions, the people you love, and the version of you that used to feel alive.</p>
+        <p class="m-lede" style="margin-top:14px;color:var(--fire-amber);font-weight:600;">Respark exists to put that fire back out — by lighting a different one.</p>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-ember-num">EMBER 01 — IDENTITY</div>
+        <div class="m-felt-line">"I don't know who I am outside of what I do."</div>
+        <div class="m-symptoms">
+          <span>Your sense of self is tied to your role, your output, your title.</span>
+          <span>You feel numb more often than you feel anything.</span>
+          <span>You can't remember what actually used to light you up.</span>
+        </div>
+        <div class="m-closing-line">You're not lost. You've just been buried under who you had to become.</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-ember-num">EMBER 02 — EMOTIONAL INTELLIGENCE</div>
+        <div class="m-felt-line">"I'm either reacting or shutting down — there's no in-between."</div>
+        <div class="m-symptoms">
+          <span>Small things set you off in ways that surprise even you.</span>
+          <span>Overwhelm is the baseline, not the exception.</span>
+          <span>Calm feels unfamiliar — almost suspicious.</span>
+        </div>
+        <div class="m-closing-line">Your emotions aren't the problem. Your relationship with them is.</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-ember-num">EMBER 03 — BELIEFS &amp; PATTERNS</div>
+        <div class="m-felt-line">"I keep sabotaging the very thing I say I want."</div>
+        <div class="m-symptoms">
+          <span>People-pleasing that quietly drains you dry.</span>
+          <span>Perfectionism that delays you instead of protecting you.</span>
+          <span>A quiet voice that says you're never quite enough.</span>
+        </div>
+        <div class="m-closing-line">These patterns kept you safe once. They're not protecting you anymore.</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-ember-num">EMBER 04 — RELATIONSHIPS &amp; COMMUNICATION</div>
+        <div class="m-felt-line">"We're together, but we feel miles apart."</div>
+        <div class="m-symptoms">
+          <span>Conflict you avoid instead of move through.</span>
+          <span>Trust that's been quietly chipped at, conversation by conversation.</span>
+          <span>Feeling unseen by the people closest to you.</span>
+        </div>
+        <div class="m-closing-line">Distance isn't proof your relationship is broken. It's a sign something honest hasn't been said yet.</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-ember-num">EMBER 05 — INTEGRATION</div>
+        <div class="m-felt-line">"My business is winning. Everything else is losing."</div>
+        <div class="m-symptoms">
+          <span>Success in one room of your life, quiet collapse in another.</span>
+          <span>Constant compartmentalizing just to keep functioning.</span>
+          <span>No version of "enough" that ever actually feels like enough.</span>
+        </div>
+        <div class="m-closing-line">One fire, not five. That's what we build back.</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">What changes</div>
+        <h2 class="m-headline">From surviving a life that looks good — to living one that feels like yours.</h2>
+        <div class="m-ba-row">
+          <div class="m-ba-card before">
+            <h3>Before</h3>
+            <p>Reactive. Performing. Compartmentalized. Achieving things you can't actually feel.</p>
+          </div>
+          <div class="m-ba-card after">
+            <h3>After</h3>
+            <p>Grounded. Honest. Integrated. Alive in your own life again — on purpose.</p>
+          </div>
+        </div>
+        <div class="m-quote-box">"We help ambitious people remember who they are and build lives they don't have to recover from."</div>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">How we get you there</div>
+        <h2 class="m-headline">The Respark Method</h2>
+        <div class="m-fw-grid">
+          <div class="m-fw-row"><span class="m-fw-letter">R</span><span class="m-fw-text"><strong>Remember</strong> who you are</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">E</span><span class="m-fw-text"><strong>Examine</strong> your patterns</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">S</span><span class="m-fw-text"><strong>Stabilize</strong> your emotions</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">P</span><span class="m-fw-text"><strong>Pursue</strong> honest connection</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">A</span><span class="m-fw-text"><strong>Align</strong> your life</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">R</span><span class="m-fw-text"><strong>Rebuild</strong> intentionally</span></div>
+          <div class="m-fw-row"><span class="m-fw-letter">K</span><span class="m-fw-text"><strong>Keep</strong> the fire burning</span></div>
+        </div>
+        <p class="m-lede" style="margin-top:22px;">We'll walk through every piece of this together once you're inside.</p>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">Where the fire lives</div>
+        <h2 class="m-headline">This is Respark.</h2>
+        <ul class="m-plain">
+          <li><strong>A community</strong> — a place to do this work alongside people who get it, not alone.</li>
+          <li><strong>The Campfire</strong> — our podcast. Pull up a chair and hear the conversations most people are too polished to have.</li>
+          <li><strong>Led by us</strong> — Alena &amp; Orlando — every single week.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="m-slide">
+      <div class="m-slide-inner">
+        <div class="m-eyebrow">Your next step</div>
+        <h2 class="m-headline">Ready to remember who you are?</h2>
+        <p class="m-lede">Join Respark, and let's reconnect what success disconnected.</p>
+        <a href="https://www.skool.com/get-lifted-life-3885" target="_blank" rel="noopener" class="m-cta-btn" id="missionCta">Join Respark on Skool →</a>
+        <div class="m-signoff">— Alena &amp; Orlando</div>
+      </div>
+    </section>
+
+    <div class="m-nav-bar">
+      <button class="m-nav-btn" id="mPrevBtn" aria-label="Previous slide">‹</button>
+      <div class="m-dots" id="mDots"></div>
+      <div class="m-counter" id="mCounter">1 / 12</div>
+      <button class="m-nav-btn" id="mNextBtn" aria-label="Next slide">›</button>
+    </div>
+
+  </div>
+
+  <footer class="rs-footer">
+    <div class="rs-footer-links">
+      <a href="https://resparkskool.github.io/legal#privacy" target="_blank" rel="noopener">Privacy Policy</a>
+      <span class="rs-footer-dot">·</span>
+      <a href="https://resparkskool.github.io/legal#terms" target="_blank" rel="noopener">Terms of Service</a>
+      <span class="rs-footer-dot">·</span>
+      <a href="https://resparkskool.github.io/legal#disclaimer" target="_blank" rel="noopener">Disclaimer</a>
+      <span class="rs-footer-dot">·</span>
+      <a href="https://resparkskool.github.io/legal#cookies" target="_blank" rel="noopener">Cookie Policy</a>
+    </div>
+    <div class="rs-footer-meta">
+      Respark<br>
+      30 North Gould Street, Suite R, Sheridan, WY 82801<br>
+      <a href="mailto:respark.skool@gmail.com">respark.skool@gmail.com</a>
+    </div>
+    <div class="rs-footer-copy">&copy; <span id="rsYear"></span> Respark. All rights reserved.</div>
+  </footer>
+
+</div>
+</div>
+
+
+
+<script>
+/* ── MISSION SLIDE ENGINE ── */
+(function(){
+  const stage = document.getElementById('missionStage');
+  const slides = Array.from(stage.querySelectorAll('.m-slide'));
+  const dotsWrap = document.getElementById('mDots');
+  const counter = document.getElementById('mCounter');
+  const prevBtn = document.getElementById('mPrevBtn');
+  const nextBtn = document.getElementById('mNextBtn');
+  let mIdx = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'm-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to mission slide ' + (i + 1));
+    d.addEventListener('click', () => goMission(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function goMission(n){
+    mIdx = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('active', i === mIdx));
+    dots.forEach((d, i) => d.classList.toggle('active', i === mIdx));
+    counter.textContent = (mIdx + 1) + ' / ' + slides.length;
+    prevBtn.disabled = mIdx === 0;
+    nextBtn.disabled = mIdx === slides.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => goMission(mIdx - 1));
+  nextBtn.addEventListener('click', () => goMission(mIdx + 1));
+
+  window.addEventListener('keydown', (e) => {
+    const missionVisible = document.getElementById('page-mission').classList.contains('active');
+    if(!missionVisible) return;
+    if(e.key === 'ArrowRight' || e.key === ' ') goMission(mIdx + 1);
+    if(e.key === 'ArrowLeft') goMission(mIdx - 1);
+  });
+
+  goMission(0);
+})();
+
+/* ── AMBIENT EMBERS (whole-document) ── */
+(function(){
+  const wrap = document.getElementById('embers');
+  for(let i = 0; i < 18; i++){
+    const s = document.createElement('div');
+    s.className = 'ember-spark';
+    const size = 3 + Math.random() * 6;
+    s.style.width = size + 'px';
+    s.style.height = size + 'px';
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    s.style.animationDuration = (10 + Math.random() * 10) + 's';
+    s.style.animationDelay = (Math.random() * 12) + 's';
+    wrap.appendChild(s);
+  }
+})();
+
+/* ── FOOTER YEAR ── */
+document.getElementById('rsYear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
